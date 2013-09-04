@@ -5,7 +5,7 @@ public class DynamicTree{
 	
 	public DynamicTree(){
 		
-		root = new DynamicNode(null, NodeType.root, null);
+		root = new DynamicNode(NodeType.Root);
 		
 	}
 	
@@ -13,9 +13,9 @@ public class DynamicTree{
 		
 		String result = "DynamicTreeRoot : {\n";
 		
-		for (DynamicNode node : root.children){
+		for (DynamicNode node : root.getChildren()){
 			
-			result += "\t"+node.toString()+",";
+			result += "\t"+node.toString()+",\n";
 			
 		}
 		

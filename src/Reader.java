@@ -15,7 +15,7 @@ public abstract class Reader{
 	
 	public abstract String getOutput();
 	
-	
+	public abstract DynamicNode getData();
 	
 	
 }

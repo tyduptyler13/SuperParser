@@ -3,12 +3,8 @@ import java.util.LinkedList;
 public class DynamicNode{
 
 	public DynamicNode parent = null;
-	public LinkedList<DynamicNode> children;
+	protected LinkedList<DynamicNode> children;
 	public NodeType type = null;
-	/**
-	 * This usually is null unless the node is an endpoint. Only endpoints will have actual data.
-	 */
-	public Data data;
 
 	/**
 	 * A node for the Dynamic tree.
@@ -16,12 +12,21 @@ public class DynamicNode{
 	 * @param type What is this node representing?
 	 * @param data The data that exists at this point. Should only be needed if its the endpoint.
 	 */
-	public DynamicNode(DynamicNode parent,NodeType type, Data data){
+	public DynamicNode(NodeType type){
 
-		this.parent = parent;
 		this.type = type;
-		this.data = data;
 
+	}
+	
+	public void addChild(DynamicNode node){
+		if (children == null) children = new LinkedList<DynamicNode>();
+		children.add(node);
+		node.parent = this;
+	}
+	
+	public LinkedList<DynamicNode> getChildren(){
+		if (children == null) children = new LinkedList<DynamicNode>();
+		return children;
 	}
 
 	public String toString(){
@@ -36,6 +41,14 @@ public class DynamicNode{
 
 		return result;
 
+	}
+	
+	/**
+	 * Returns only this objects string variation.
+	 * @return
+	 */
+	public String getOutput(){
+		return type.toString();
 	}
 
 }

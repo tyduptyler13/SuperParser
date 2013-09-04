@@ -73,21 +73,20 @@ public class GUI extends JPanel implements ActionListener{
 		if (e.getActionCommand().equals("open")){
 			JFileChooser in = new JFileChooser("Open");
 			in.setCurrentDirectory(new File("."));
-			in.addChoosableFileFilter(fs.getFilter());
-			in.setFileFilter(in.getChoosableFileFilters()[0]);
+			in.addChoosableFileFilter(FileSystem.getFilter());
+			in.setFileFilter(in.getChoosableFileFilters()[1]);
 			in.setAcceptAllFileFilterUsed(false);
 			in.setMultiSelectionEnabled(true);
 			if (in.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
 				fs = new FileSystem(in.getSelectedFiles());
 				print("Directory selected.");
-				fs.getFiles();
 				print("Finished scanning. Found "+fs.getFileCount()+" files.");
 				parse.setEnabled(true);
 			} else {
 				print("No folder selected.");
 			}
 			
-		}else if (e.getActionCommand().equals("parse")){
+		} else if (e.getActionCommand().equals("parse")){
 			print("Parsing files. This can take some time.");
 			fs.parse();
 			StringSelection ss = new StringSelection(fs.getOutput());

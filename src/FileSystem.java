@@ -2,37 +2,54 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
 public class FileSystem{
 	
 	private ArrayList<File> files = new ArrayList<File>();
 	private ArrayList<Reader> readers;
+	private DynamicTree tree;
+	private DynamicNode root;
+	public FileFilter filter;
+	
+	private FileSystem(){
+		
+		filter = getFilter();
+		tree = new DynamicTree();
+		root = tree.root;
+	}
 	
 	public FileSystem(File directory){
 		
+		this();
 		this.files.add(directory);
+		getFiles(root);
 		
 	}
 	
 	public FileSystem(File[] files){
 		
+		this();
 		for (File file : files){
 			this.files.add(file);
 		}
+		getFiles(root);
 		
 	}
 	
-	public FileSystem getFiles(){
+	private FileSystem getFiles(DynamicNode node){
 		
 		ArrayList<File> files = new ArrayList<File>();
 		
 		for (File file : this.files){
 			
 			if (file.isDirectory()){
-				files.addAll(getFiles(file));
+				DynamicNode folder = new FileNode(file);
+				node.addChild(folder);
+				files.addAll(getFiles(file, folder));
 			} else if (file.isFile()){
+				DynamicNode fileNode = new FileNode(file);
+				node.addChild(fileNode);
 				files.add(file);
 			}
 			
@@ -42,21 +59,20 @@ public class FileSystem{
 		
 		return this;
 	}
-	
-	/**
-	 * Recursively finds all sts files.
-	 * @param directory Top Directory.
-	 * @return All sub files with .sts extension.
-	 */
-	private ArrayList<File> getFiles(File directory){
+
+	private ArrayList<File> getFiles(File directory, DynamicNode node){
 		
 		ArrayList<File> files = new ArrayList<File>();
 		
 		for (File file : directory.listFiles()){
 			
 			if (file.isDirectory()){
-				files.addAll(getFiles(file));
-			} else if (file.getName().endsWith(".sts")){
+				DynamicNode folder = new FileNode(file);
+				node.addChild(folder);
+				files.addAll(getFiles(file, folder));
+			} else if (filter.accept(file)){
+				DynamicNode fileNode = new FileNode(file);
+				node.addChild(fileNode);
 				files.add(file);
 			}
 			
@@ -66,22 +82,22 @@ public class FileSystem{
 		
 	}
 	
-	public static FileFilter getFilter(){
+	public static final FileFilter getFilter(){
 		
 		return new FileFilter(){
 
 			/**
-			 * Directories, .hst, .sts
+			 * Directories, .hst, .sts, .sp
 			 */
 			@Override
 			public boolean accept(File f) {
 				if (f.isDirectory()) return true;
-				return (f.getName().endsWith(".hst") || f.getName().endsWith(".sts"));
+				return (f.getName().endsWith(".hst") || f.getName().endsWith(".sts") || f.getName().endsWith(".sp"));
 			}
 
 			@Override
 			public String getDescription() {
-				return "Files this program is capable of handling. (hst|sts)";
+				return "Custom Filter. (hst|sts|sp)";
 			}
 			
 			

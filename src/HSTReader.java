@@ -5,7 +5,6 @@ public class HSTReader extends Reader{
 
 	public HSTReader(File file) {
 		super(file);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -19,5 +18,13 @@ public class HSTReader extends Reader{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public DynamicNode getData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
 	
 }

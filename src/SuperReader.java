@@ -1,9 +1,13 @@
 import java.io.File;
 
+/**
+ * This allows the program to read in saved parses.
+ * @author Tyler
+ *
+ */
+public class SuperReader extends Reader{
 
-public class NFCReader extends Reader{
-
-	public NFCReader(File file) {
+	public SuperReader(File file) {
 		super(file);
 		// TODO Auto-generated constructor stub
 	}
@@ -21,12 +25,10 @@ public class NFCReader extends Reader{
 	}
 
 	@Override
-	public DynamicNode getData() {
+	public Data getData() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	
 	
 }
 
