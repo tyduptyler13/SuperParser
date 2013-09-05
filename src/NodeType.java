@@ -7,5 +7,9 @@ public enum NodeType{
 	STSFile,//Top level sts results node
 	Folder,//Top level folder node
 	File,//Temporary designation of file
+	Header,
+	Section,
+	Table,
+	BasicEntry,
 	Root;//Top most root node
 }

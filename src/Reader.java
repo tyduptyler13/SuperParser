@@ -1,9 +1,10 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 
 
 public abstract class Reader{
 	
-	private File file;
+	protected File file;
 	
 	public Reader(File file){
 		
@@ -11,7 +12,7 @@ public abstract class Reader{
 		
 	}
 	
-	public abstract Reader readIn();
+	public abstract Reader readIn() throws FileNotFoundException;
 	
 	public abstract String getOutput();
 	

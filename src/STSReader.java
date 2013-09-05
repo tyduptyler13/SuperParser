@@ -1,0 +1,139 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.Scanner;
+
+
+public final class STSReader extends Reader{
+
+	private DynamicNode node = new DynamicNode(NodeType.STSFile);
+	private Header head;
+
+	public STSReader(File file) {
+		super(file);
+	}
+
+	@Override
+	public Reader readIn() throws FileNotFoundException {
+		//Prep data tree.
+		head = new Header();
+		node.addChild(head);
+
+		//Read into tree.
+		Scanner s = new Scanner(new FileReader(file));
+
+		while (s.hasNextLine()){
+
+			String line = s.nextLine();
+
+			if (isHeader(line)){
+
+				String[] parts = line.split(" :\t");
+				head.addEntry(parts[0], parts[1]);
+
+			}
+
+			if (isSection(line)){
+
+				if (line.contains("Overall Statistics")){
+
+					Section section = new Section("Overall Statistics");
+					node.addChild(section);
+
+					readSection(section, s);
+
+				} else if (line.contains("Landscape Count")){
+					
+					Section section = new Section("Landscape Count");
+					node.addChild(section);
+
+					readSection(section, s);
+					
+				} else if (line.contains("Appliance Statistics")) {
+					
+					Section section = new Section("Appliance Statistics");
+					node.addChild(section);
+					
+					readTableSection(section, s);
+					
+					
+				} else {//TODO more sections
+					skipSection(s);
+				}
+
+			}
+
+		}
+
+		s.close();
+
+		return this;
+	}
+
+	@Override
+	public String getOutput(){
+		return node.getOutput();
+	}
+
+	@Override
+	public DynamicNode getData() {
+		return node;
+	}
+
+	private boolean isHeader(String s){
+		return s.matches("[A-Za-z ]+ :\t[A-Za-z0-9\\.\\\\:-_ ]+");
+	}
+
+	private boolean isSection(String s){
+		return s.matches("\\*[A-Za-z ]+\\*");
+	}
+	
+	private void readTableSection(Section section, Scanner s){
+		
+		TableData table = new TableData();
+		section.addChild(table);
+		
+		String line;
+		while (!(line = s.nextLine()).startsWith("Number"));
+		
+		String[] headers = line.split("\t");
+		
+		for (String header : headers){
+			
+			table.addHeader(header);
+			
+		}
+		
+		while (!(line = s.nextLine()).equals("")){
+			
+			String[] cells = line.split("\t");
+			table.addRow();
+			
+			for (String cell : cells){
+				
+				table.pushCell(cell);
+				
+			}
+			
+		}
+		
+	}
+
+	private void readSection(Section section, Scanner s){
+		String line;
+		KeyPairData node = new KeyPairData();
+
+		while(!(line = s.nextLine()).equals("")){
+			String[] parts = line.split(" :\t");
+			node.addEntry(parts[0], parts[1]);
+		}
+
+		section.addChild(node);
+	}
+
+	private void skipSection(Scanner s){
+		while(!(s.nextLine()).equals(""));
+	}
+
+}
+

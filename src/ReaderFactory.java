@@ -8,7 +8,7 @@ public class ReaderFactory{
 		if (file.getName().endsWith(".hst")){
 			return new HSTReader(file);
 		} else if (file.getName().endsWith(".sts")){
-			return new NFCReader(file);
+			return new STSReader(file);
 		} else if (file.getName().endsWith(".sp")){
 			return new SuperReader(file);
 		} else {
