@@ -1,21 +1,22 @@
+import java.awt.Component;
 import java.util.ArrayList;
 
 
 
 public class TableData extends Data{
 
-	public TableData(){
+	public TableData(String title){
 		super(NodeType.Table);
-
+		this.title = title;
 	}
 
-
+	private String title;
 	private ArrayList<String> headers = new ArrayList<String>();
 	private ArrayList<ArrayList<String>> table = new ArrayList<ArrayList<String>>();
 
 	@Override
 	public String getOutput() {
-		String s = " Table {\n";
+		String s = title + " {\n";
 
 		for (String header : headers){
 			s += header + "\t";
@@ -37,10 +38,6 @@ public class TableData extends Data{
 		}
 
 		s+= "}\n";
-
-		for (DynamicNode node : children){//Shouldn't need this...
-			s += node.getOutput();
-		}
 
 		return s;
 	}
@@ -69,6 +66,12 @@ public class TableData extends Data{
 		}
 
 		_row.set(column, value);
+	}
+
+	@Override
+	public Component getComponent() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

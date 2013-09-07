@@ -1,3 +1,4 @@
+import java.awt.Component;
 
 public abstract class Data extends DynamicNode{
 	
@@ -15,5 +16,7 @@ public abstract class Data extends DynamicNode{
 	public String toString(){
 		return type.toString() + "(" + getOutput() + ")";
 	}
+	
+	public abstract Component getComponent();
 	
 }

@@ -1,3 +1,4 @@
+import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +37,12 @@ public class KeyPairData extends Data{
 	 */
 	public String requestEntry(String key){
 		return data.get(key);
+	}
+
+	@Override
+	public Component getComponent() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

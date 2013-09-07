@@ -43,22 +43,36 @@ public final class STSReader extends Reader{
 					readSection(section, s);
 
 				} else if (line.contains("Landscape Count")){
-					
+
 					Section section = new Section("Landscape Count");
 					node.addChild(section);
 
 					readSection(section, s);
-					
+
 				} else if (line.contains("Appliance Statistics")) {
-					
+
 					Section section = new Section("Appliance Statistics");
 					node.addChild(section);
+
+					readTableSection(section, s);//Time Spent doing action
 					
-					readTableSection(section, s);
+					readTableSection(section, s);//Time Spent in mode
 					
+					if (s.nextLine().equals("Resources Used")){
+						
+						Section ru = new Section("Resources Used");
+						
+						section.addChild(ru);
+						
+						readSection(ru, s);
+						
+					}
+
+
+				} else {
 					
-				} else {//TODO more sections
-					skipSection(s);
+					node.addChild(new UnknownData(line));
+					
 				}
 
 			}
@@ -87,36 +101,44 @@ public final class STSReader extends Reader{
 	private boolean isSection(String s){
 		return s.matches("\\*[A-Za-z ]+\\*");
 	}
-	
+
 	private void readTableSection(Section section, Scanner s){
+
+		String line;
+		while (!(line = s.nextLine()).startsWith("Time Spent")){
+			section.addChild(new UnknownData(line));
+		}
 		
-		TableData table = new TableData();
+		String title = line;
+		
+		TableData table = new TableData(title);
 		section.addChild(table);
 		
-		String line;
-		while (!(line = s.nextLine()).startsWith("Number"));
-		
+		line = s.nextLine();
+
 		String[] headers = line.split("\t");
-		
+
 		for (String header : headers){
-			
+
 			table.addHeader(header);
-			
+
 		}
-		
-		while (!(line = s.nextLine()).equals("")){
+
+		while (s.hasNextInt()){
 			
+			line = s.nextLine();
+
 			String[] cells = line.split("\t");
 			table.addRow();
-			
+
 			for (String cell : cells){
-				
+
 				table.pushCell(cell);
-				
+
 			}
-			
+
 		}
-		
+
 	}
 
 	private void readSection(Section section, Scanner s){
@@ -129,10 +151,6 @@ public final class STSReader extends Reader{
 		}
 
 		section.addChild(node);
-	}
-
-	private void skipSection(Scanner s){
-		while(!(s.nextLine()).equals(""));
 	}
 
 }

@@ -1,6 +1,7 @@
+import java.awt.Component;
 import java.io.File;
 
-public class FileNode extends DynamicNode{
+public class FileNode extends Data{
 	
 	public File file;
 	
@@ -11,6 +12,12 @@ public class FileNode extends DynamicNode{
 	
 	public String getOutput(){
 		return file.getName();
+	}
+
+	@Override
+	public Component getComponent() {
+		//TODO
+		return null;
 	}
 	
 }
