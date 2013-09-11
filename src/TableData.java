@@ -1,12 +1,11 @@
-import java.awt.Component;
 import java.util.ArrayList;
 
-
+import javax.swing.tree.MutableTreeNode;
 
 public class TableData extends Data{
 
 	public TableData(String title){
-		super(NodeType.Table);
+		super("Table");
 		this.title = title;
 	}
 
@@ -67,11 +66,32 @@ public class TableData extends Data{
 
 		_row.set(column, value);
 	}
+	
+	public String[][] toArray(){
+		
+		String[][] rows = new String[table.size()][];
+		
+		for (int i = 0; i<table.size(); ++i){
+			
+			rows[i] = (String[]) table.get(i).toArray();
+			
+		}
+		
+		return rows;
+		
+	}
 
 	@Override
-	public Component getComponent() {
-		// TODO Auto-generated method stub
-		return null;
+	public String toString() {
+		return getOutput();
+	}
+
+	@Override
+	public MutableTreeNode getComponents() {
+		
+		TreeNode t = new TreeNode(title, this);
+		
+		return t;
 	}
 
 }

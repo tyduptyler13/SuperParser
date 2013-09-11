@@ -6,11 +6,12 @@ import java.util.Scanner;
 
 public final class STSReader extends Reader{
 
-	private DynamicNode node = new DynamicNode(NodeType.STSFile);
+	private FileNode node;
 	private Header head;
 
 	public STSReader(File file) {
 		super(file);
+		node = new FileNode(file);
 	}
 
 	@Override

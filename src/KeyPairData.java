@@ -1,14 +1,15 @@
-import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.swing.tree.MutableTreeNode;
 
 public class KeyPairData extends Data{
 
 	public KeyPairData(){
-		super(NodeType.BasicEntry);
+		super("KeyPairData");
 	}
 
-	protected KeyPairData(NodeType type){
+	protected KeyPairData(String type){
 		super(type);
 	}
 
@@ -16,7 +17,7 @@ public class KeyPairData extends Data{
 
 	@Override
 	public String getOutput() {
-		String s = "";
+		String s = type;
 
 		for (Map.Entry<String, String> e: data.entrySet()){
 			s += e.getKey() + " :\t" + e.getValue() + "\n";
@@ -40,9 +41,15 @@ public class KeyPairData extends Data{
 	}
 
 	@Override
-	public Component getComponent() {
-		// TODO Auto-generated method stub
-		return null;
+	public String toString() {
+		return getOutput();
+	}
+
+	@Override
+	public MutableTreeNode getComponents() {
+		
+		return new TreeNode(type, this);
+
 	}
 
 }

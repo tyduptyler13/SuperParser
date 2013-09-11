@@ -10,7 +10,7 @@ public class HSTReader extends Reader{
 	@Override
 	public Reader readIn() {
 		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
 	@Override

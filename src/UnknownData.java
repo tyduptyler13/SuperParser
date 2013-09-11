@@ -1,6 +1,5 @@
-import java.awt.Component;
-
-import javax.swing.JTextArea;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.MutableTreeNode;
 
 
 
@@ -9,7 +8,7 @@ public class UnknownData extends Data{
 	public String data;
 	
 	public UnknownData(String data){
-		super(NodeType.BasicEntry);
+		super("UnknownData");
 		this.data = data;
 	}
 	
@@ -24,8 +23,19 @@ public class UnknownData extends Data{
 
 
 	@Override
-	public Component getComponent() {
-		return new JTextArea(data);
+	public MutableTreeNode getComponents() {
+		
+		DefaultMutableTreeNode t = new DefaultMutableTreeNode(getOutput());
+		
+		return t;
+
+	}
+
+
+
+	@Override
+	public String toString() {
+		return getOutput();
 	}
 	
 	

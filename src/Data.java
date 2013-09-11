@@ -1,11 +1,11 @@
-import java.awt.Component;
+import javax.swing.tree.MutableTreeNode;
 
 public abstract class Data extends DynamicNode{
 	
-	public Data(NodeType type) {
+	public Data(String type) {
 		super(type);
 	}
-	
+
 	/**
 	 * Prints out the data in a string format.
 	 * @return
@@ -13,10 +13,12 @@ public abstract class Data extends DynamicNode{
 	public abstract String getOutput();
 	
 	@Override
-	public String toString(){
-		return type.toString() + "(" + getOutput() + ")";
-	}
+	abstract public String toString();
 	
-	public abstract Component getComponent();
+	/**
+	 * Recursively retrieves all awt/swing components for display.
+	 * @return AWT Container with all components in the data.
+	 */
+	public abstract MutableTreeNode getComponents();
 	
 }

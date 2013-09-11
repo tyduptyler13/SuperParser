@@ -1,3 +1,6 @@
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+
 
 public class DynamicTree{
 	
@@ -5,7 +8,7 @@ public class DynamicTree{
 	
 	public DynamicTree(){
 		
-		root = new DynamicNode(NodeType.Root);
+		root = new DynamicNode("Root");
 		
 	}
 	
@@ -20,6 +23,22 @@ public class DynamicTree{
 		}
 		
 		return result;
+		
+	}
+	
+	public JTree getTree(){
+		
+		DefaultMutableTreeNode r = new DefaultMutableTreeNode("Root");
+		
+		for (Data node : root.getChildren()){
+			
+			r.add(node.getComponents());
+			
+		}
+		
+		JTree tree = new JTree(r);
+
+		return tree;
 		
 	}
 	

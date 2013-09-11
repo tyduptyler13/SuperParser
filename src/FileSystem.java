@@ -1,3 +1,4 @@
+import java.awt.Component;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -44,11 +45,11 @@ public class FileSystem{
 		for (File file : this.files){
 			
 			if (file.isDirectory()){
-				DynamicNode folder = new FileNode(file);
+				Data folder = new FileNode(file);
 				node.addChild(folder);
 				files.addAll(getFiles(file, folder));
 			} else if (file.isFile()){
-				DynamicNode fileNode = new FileNode(file);
+				Data fileNode = new FileNode(file);
 				node.addChild(fileNode);
 				files.add(file);
 			}
@@ -67,11 +68,11 @@ public class FileSystem{
 		for (File file : directory.listFiles()){
 			
 			if (file.isDirectory()){
-				DynamicNode folder = new FileNode(file);
+				Data folder = new FileNode(file);
 				node.addChild(folder);
 				files.addAll(getFiles(file, folder));
 			} else if (filter.accept(file)){
-				DynamicNode fileNode = new FileNode(file);
+				Data fileNode = new FileNode(file);
 				node.addChild(fileNode);
 				files.add(file);
 			}
@@ -100,8 +101,6 @@ public class FileSystem{
 				return "Custom Filter. (hst|sts|sp)";
 			}
 			
-			
-			
 		};
 		
 	}
@@ -126,6 +125,12 @@ public class FileSystem{
 		}
 		
 		return this;
+		
+	}
+	
+	public Component getComponents(){
+		
+		return tree.getTree();
 		
 	}
 	

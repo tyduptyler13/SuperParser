@@ -1,11 +1,10 @@
-import java.awt.Component;
-
-
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.MutableTreeNode;
 
 public class Section extends Data{
 
 	public Section(String name){
-		super(NodeType.Section);
+		super("Section");
 		this.name = name;
 	}
 
@@ -15,11 +14,24 @@ public class Section extends Data{
 	public String getOutput() {
 		return this.name;
 	}
+	
+	@Override
+	public String toString(){
+		return type + " : " + name;
+	}
 
 	@Override
-	public Component getComponent() {
-		// TODO Auto-generated method stub
-		return null;
+	public MutableTreeNode getComponents() {
+		
+		DefaultMutableTreeNode node = new DefaultMutableTreeNode(this.name);
+		
+		for (Data child : children){
+			
+			node.add(child.getComponents());
+			
+		}
+		
+		return node;
 	}
 
 }
