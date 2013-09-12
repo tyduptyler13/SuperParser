@@ -1,14 +1,18 @@
 import java.io.File;
 
+import javax.swing.tree.MutableTreeNode;
 
-public class HSTReader extends Reader{
 
+public class HSTReader extends FileNode implements Reader{
+
+	
 	public HSTReader(File file) {
 		super(file);
+		this.file = file;
 	}
 
 	@Override
-	public Reader readIn() {
+	public HSTReader readIn() {
 		// TODO Auto-generated method stub
 		return this;
 	}
@@ -21,6 +25,18 @@ public class HSTReader extends Reader{
 
 	@Override
 	public DynamicNode getData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public MutableTreeNode getComponents() {
 		// TODO Auto-generated method stub
 		return null;
 	}

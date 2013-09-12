@@ -5,17 +5,20 @@ import java.io.File;
  * @author Tyler
  *
  */
-public class SuperReader extends Reader{
+public class SuperReader implements Reader{
 
+	private File file;
+	
 	public SuperReader(File file) {
-		super(file);
-		// TODO Auto-generated constructor stub
+		
+		this.file = file;
+		
 	}
 
 	@Override
 	public Reader readIn() {
 		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
 	@Override

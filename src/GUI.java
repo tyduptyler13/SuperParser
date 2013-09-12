@@ -26,10 +26,11 @@ public class GUI extends JPanel implements ActionListener{
 	 */
 	private static final long serialVersionUID = -7632908392074124134L;
 
-	private JButton openFiles, openDirectory, parse;
+	private JButton openFiles, openDirectory, getResults;
 	private JTextArea console;
 	private JPanel dataArea;
 	private FileSystem fs;
+	private static JFrame frame;
 
 	private GUI(){
 
@@ -38,11 +39,11 @@ public class GUI extends JPanel implements ActionListener{
 
 		JPanel buttonbar = new JPanel();
 		buttonbar.setLayout(new FlowLayout());
-		
-		JPanel dataArea = new JPanel();
+
+		dataArea = new JPanel();
 		dataArea.setVisible(false);
 
-		openFiles = new JButton("OpenFiles");
+		openFiles = new JButton("Open Files");
 		openFiles.setVerticalTextPosition(SwingConstants.CENTER);
 		openFiles.setHorizontalTextPosition(SwingConstants.LEADING);
 		openFiles.setActionCommand("openFiles");
@@ -53,13 +54,13 @@ public class GUI extends JPanel implements ActionListener{
 		openDirectory.setHorizontalTextPosition(SwingConstants.LEADING);
 		openDirectory.setActionCommand("openDirectory");
 		openDirectory.addActionListener(this);
-
-		parse = new JButton("Parse");
-		parse.setVerticalTextPosition(SwingConstants.CENTER);
-		parse.setHorizontalTextPosition(SwingConstants.LEADING);
-		parse.setActionCommand("parse");
-		parse.setEnabled(false);
-		parse.addActionListener(this);
+		
+		getResults = new JButton("Get Results");
+		getResults.setVerticalTextPosition(SwingConstants.CENTER);
+		getResults.setHorizontalAlignment(SwingConstants.LEADING);
+		getResults.setActionCommand("getResults");
+		getResults.addActionListener(this);
+		getResults.setEnabled(false);
 
 		console = new JTextArea();
 		console.setEditable(false);
@@ -72,7 +73,7 @@ public class GUI extends JPanel implements ActionListener{
 
 		buttonbar.add(openFiles);
 		buttonbar.add(openDirectory);
-		buttonbar.add(parse);
+		buttonbar.add(getResults);
 
 		root.add(buttonbar, BorderLayout.NORTH);
 		root.add(dataArea, BorderLayout.CENTER);
@@ -92,8 +93,8 @@ public class GUI extends JPanel implements ActionListener{
 			in.setMultiSelectionEnabled(true);
 			if (in.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
 				fs = new FileSystem(in.getSelectedFiles());
-				print(fs.getFileCount() + " files selected.");
-				parse.setEnabled(true);
+				print(fs.getFileCount() + " files parsed.");
+				showData();
 			} else {
 				print("No folder selected.");
 			}
@@ -104,27 +105,34 @@ public class GUI extends JPanel implements ActionListener{
 			in.setCurrentDirectory(new File("."));
 			in.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			if (in.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
-				fs = new FileSystem(in.getCurrentDirectory());
+				fs = new FileSystem(in.getSelectedFile());
 				print("Directory Selected.");
-				print(fs.getFileCount() + " files found.");
-				parse.setEnabled(true);
+				print(fs.getFileCount() + " files parsed.");
+				showData();
+				
 			} else {
 				print("No folder selected.");
 			}
 
-		} else if (e.getActionCommand().equals("parse")){
-			print("Parsing files. This can take some time.");
-			fs.parse();
-
-			dataArea.add(fs.getComponents());
-			dataArea.setVisible(true);
-			
-			//Clipboard code.
-			StringSelection ss = new StringSelection(fs.getOutput());
-			Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
-			cb.setContents(ss, null);
-			print("Results are ready. The results have been copied to your clipboard. Paste them to your master coding sheet.");
+		} else if (e.getActionCommand().equals("getResults")){
+			getOutput();
 		}
+		
+		frame.repaint();
+
+	}
+
+	private void showData(){
+		getResults.setEnabled(true);
+		dataArea.add(fs.getComponents());
+		dataArea.setVisible(true);
+	}
+
+	private void getOutput(){
+		StringSelection ss = new StringSelection(fs.getOutput());
+		Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
+		cb.setContents(ss, null);
+		print("The results have been copied to your clipboard. They may be pasted into excel or a text document.");
 	}
 
 	private void print(String s){
@@ -132,7 +140,7 @@ public class GUI extends JPanel implements ActionListener{
 	}
 
 	public static void createAndShowGUI() {
-		JFrame frame = new JFrame("SuperParser");
+		frame = new JFrame("SuperParser");
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException e) {

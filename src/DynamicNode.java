@@ -3,7 +3,7 @@ import java.util.LinkedList;
 public class DynamicNode{
 
 	public DynamicNode parent = null;
-	protected LinkedList<Data> children;
+	protected LinkedList<Data> children = new LinkedList<Data>();
 	protected String type;
 	
 	public DynamicNode(String type){
@@ -11,13 +11,11 @@ public class DynamicNode{
 	}
 
 	public void addChild(Data node){
-		if (children == null) children = new LinkedList<Data>();
 		children.add(node);
 		node.parent = this;
 	}
 
 	public LinkedList<Data> getChildren(){
-		if (children == null) children = new LinkedList<Data>();
 		return children;
 	}
 
@@ -25,6 +23,15 @@ public class DynamicNode{
 
 		return type;
 
+	}
+	
+	/**
+	 * Recursively retrieves data from tree and outputs it to a usable excel format.
+	 * @return
+	 */
+	public String getOutput(){
+		//TODO
+		return "";
 	}
 
 }

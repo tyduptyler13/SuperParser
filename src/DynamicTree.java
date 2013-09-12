@@ -32,7 +32,11 @@ public class DynamicTree{
 		
 		for (Data node : root.getChildren()){
 			
-			r.add(node.getComponents());
+			try{
+				r.add(node.getComponents());
+			} catch (Exception e){
+				//Do nothing. Null nodes should be skipped.
+			}
 			
 		}
 		

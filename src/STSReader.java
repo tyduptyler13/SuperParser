@@ -4,21 +4,17 @@ import java.io.FileReader;
 import java.util.Scanner;
 
 
-public final class STSReader extends Reader{
-
-	private FileNode node;
-	private Header head;
+public final class STSReader extends FileNode implements Reader{
 
 	public STSReader(File file) {
-		super(file);
-		node = new FileNode(file);
+		super(file, "STSReader");
 	}
 
 	@Override
-	public Reader readIn() throws FileNotFoundException {
+	public STSReader readIn() throws FileNotFoundException {
 		//Prep data tree.
-		head = new Header();
-		node.addChild(head);
+		Header head = new Header();
+		addChild(head);
 
 		//Read into tree.
 		Scanner s = new Scanner(new FileReader(file));
@@ -39,21 +35,21 @@ public final class STSReader extends Reader{
 				if (line.contains("Overall Statistics")){
 
 					Section section = new Section("Overall Statistics");
-					node.addChild(section);
+					addChild(section);
 
 					readSection(section, s);
 
 				} else if (line.contains("Landscape Count")){
 
 					Section section = new Section("Landscape Count");
-					node.addChild(section);
+					addChild(section);
 
 					readSection(section, s);
 
 				} else if (line.contains("Appliance Statistics")) {
 
 					Section section = new Section("Appliance Statistics");
-					node.addChild(section);
+					addChild(section);
 
 					readTableSection(section, s);//Time Spent doing action
 					
@@ -72,7 +68,7 @@ public final class STSReader extends Reader{
 
 				} else {
 					
-					node.addChild(new UnknownData(line));
+					addChild(new UnknownData(line));
 					
 				}
 
@@ -87,12 +83,7 @@ public final class STSReader extends Reader{
 
 	@Override
 	public String getOutput(){
-		return node.getOutput();
-	}
-
-	@Override
-	public DynamicNode getData() {
-		return node;
+		return getOutput();
 	}
 
 	private boolean isHeader(String s){
@@ -152,6 +143,11 @@ public final class STSReader extends Reader{
 		}
 
 		section.addChild(node);
+	}
+
+	@Override
+	public DynamicNode getData() {
+		return this;
 	}
 
 }

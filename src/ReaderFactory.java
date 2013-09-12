@@ -1,18 +1,19 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 
 
 public class ReaderFactory{
 
-	public static Reader createReader(File file) throws Exception{
+	public static Data createReader(File file) throws FileNotFoundException{
 
 		if (file.getName().endsWith(".hst")){
-			return new HSTReader(file);
+			return new HSTReader(file).readIn();
 		} else if (file.getName().endsWith(".sts")){
-			return new STSReader(file);
+			return new STSReader(file).readIn();
 		} else if (file.getName().endsWith(".sp")){
-			return new SuperReader(file);
+			return new SuperReader(file).getData();
 		} else {
-			throw new Exception("A reader does not exist for this file type.");
+			return new UnknownData(file.getName());
 		}
 
 	}
