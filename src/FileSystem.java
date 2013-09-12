@@ -2,6 +2,8 @@ import java.awt.Component;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
 import javax.swing.filechooser.FileFilter;
 
 public class FileSystem{
@@ -88,9 +90,12 @@ public class FileSystem{
 	}
 
 	public Component getComponents(){
+		
+		JTree t = tree.getTree();
+		JScrollPane pane = new JScrollPane(t, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-		return tree.getTree();
-
+		return pane;
+		
 	}
 
 	public String getOutput(){
