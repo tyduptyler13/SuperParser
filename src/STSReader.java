@@ -81,11 +81,6 @@ public final class STSReader extends FileNode implements Reader{
 		return this;
 	}
 
-	@Override
-	public String getOutput(){
-		return getOutput();
-	}
-
 	private boolean isHeader(String s){
 		return s.matches("[A-Za-z ]+ :\t[A-Za-z0-9\\.\\\\:-_ ]+");
 	}

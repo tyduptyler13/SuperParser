@@ -27,7 +27,7 @@ public class GUI extends JPanel implements ActionListener{
 	private static final long serialVersionUID = -7632908392074124134L;
 
 	private JButton openFiles, openDirectory, getResults;
-	private JTextArea console;
+	private JTextArea console, data;
 	private JPanel dataArea;
 	private FileSystem fs;
 	private static JFrame frame;
@@ -41,7 +41,16 @@ public class GUI extends JPanel implements ActionListener{
 		buttonbar.setLayout(new FlowLayout());
 
 		dataArea = new JPanel();
+		dataArea.setLayout(new FlowLayout());
 		dataArea.setVisible(false);
+		
+		data = new JTextArea();
+		data.setEditable(false);
+		data.setPreferredSize(new Dimension(300, 400));
+		JScrollPane dataScroll = new JScrollPane(data);
+		dataScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		dataScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		dataArea.add(dataScroll);
 
 		openFiles = new JButton("Open Files");
 		openFiles.setVerticalTextPosition(SwingConstants.CENTER);
@@ -124,8 +133,9 @@ public class GUI extends JPanel implements ActionListener{
 
 	private void showData(){
 		getResults.setEnabled(true);
-		dataArea.add(fs.getComponents());
+		dataArea.add(fs.getComponents(data));
 		dataArea.setVisible(true);
+		frame.setSize(650, 650);
 	}
 
 	private void getOutput(){

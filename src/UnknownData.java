@@ -1,7 +1,4 @@
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
-
-
 
 public class UnknownData extends Data{
 	
@@ -18,6 +15,7 @@ public class UnknownData extends Data{
 	public String getOutput() {
 		
 		return "Unknown Data Entry : \"" + data + "\"";
+
 	}
 
 
@@ -25,7 +23,7 @@ public class UnknownData extends Data{
 	@Override
 	public MutableTreeNode getComponents() {
 		
-		DefaultMutableTreeNode t = new DefaultMutableTreeNode(getOutput());
+		TreeNode t = new TreeNode(getOutput(), this);
 		
 		return t;
 

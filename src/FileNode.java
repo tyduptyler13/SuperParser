@@ -1,6 +1,5 @@
 import java.io.File;
 
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
 
 public class FileNode extends Data{
@@ -33,7 +32,7 @@ public class FileNode extends Data{
 	@Override
 	public MutableTreeNode getComponents() {
 
-		DefaultMutableTreeNode node = new DefaultMutableTreeNode(file.getName());
+		TreeNode node = new TreeNode(file.getName(), this);
 
 		for (Data child : children){
 

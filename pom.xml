@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>SuperParser</groupId>
 	<artifactId>SuperParser</artifactId>
-	<version>0.0.5-SNAPSHOT</version>
+	<version>0.0.6-SNAPSHOT</version>
 	<name>SuperParser</name>
 	<description>A combination of NFCParser and HSTReader with a few extra bells and whistles.</description>
 	<properties>
@@ -36,7 +36,7 @@
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<manifestEntries>
 										<Main-Class>SuperParser</Main-Class>
-										<Build-Number>4</Build-Number>
+										<Build-Number>6</Build-Number>
 									</manifestEntries>
 								</transformer>
 							</transformers>

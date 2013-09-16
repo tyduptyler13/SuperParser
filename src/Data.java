@@ -12,6 +12,16 @@ public abstract class Data extends DynamicNode{
 	 */
 	public abstract String getOutput();
 	
+	public String getOutput(Filter f){
+		
+		if (f.override(this)){
+			return f.getOutput(this);
+		} else {
+			return getOutput();
+		}
+		
+	}
+	
 	@Override
 	abstract public String toString();
 	

@@ -1,4 +1,3 @@
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
 
 public class Section extends Data{
@@ -12,7 +11,13 @@ public class Section extends Data{
 
 	@Override
 	public String getOutput() {
-		return this.name;
+		String s = this.name + "\n\n";
+		
+		for (Data node : children){
+			s += node.getOutput() + "\n";
+		}
+		
+		return s;
 	}
 	
 	@Override
@@ -23,7 +28,7 @@ public class Section extends Data{
 	@Override
 	public MutableTreeNode getComponents() {
 		
-		DefaultMutableTreeNode node = new DefaultMutableTreeNode(this.name);
+		TreeNode node = new TreeNode(this.name, this);
 		
 		for (Data child : children){
 			
