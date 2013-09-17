@@ -1,13 +1,16 @@
 import java.io.File;
 
-import javax.swing.tree.MutableTreeNode;
-
 
 public class HSTReader extends FileNode implements Reader{
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3157882334393070531L;
+
 	public HSTReader(File file) {
-		super(file);
+		super(file, "HSTReader");
 		this.file = file;
 	}
 
@@ -19,12 +22,6 @@ public class HSTReader extends FileNode implements Reader{
 
 	@Override
 	public String getOutput() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String toString() {
 		// TODO Auto-generated method stub
 		return null;
 	}

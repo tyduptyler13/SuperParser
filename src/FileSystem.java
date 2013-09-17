@@ -16,6 +16,7 @@ public class FileSystem{
 	public FileFilter fileFilter;
 	private TreeNode root;
 	private JTree tree;
+	private int fileCount = 0;
 
 	private FileSystem(){
 
@@ -45,7 +46,10 @@ public class FileSystem{
 
 		for (File file : files){
 
-			addFile(file, node);
+			if (file.isDirectory())
+				getFiles(file, root);
+			else
+				addFile(file, node);
 
 		}
 
@@ -55,6 +59,7 @@ public class FileSystem{
 
 		try {
 			node.add(ReaderFactory.createReader(file));
+			fileCount++;
 		} catch (FileNotFoundException e) {
 			Console.warn("Something may have gone wrong. The file doesn't seem to exist. (" + file.getPath() + ")");
 		} catch (ReaderFactory.FileNotSupported e) {
@@ -70,7 +75,9 @@ public class FileSystem{
 			if (file.isFile()){
 				addFile(file, node);
 			} else if (file.isDirectory()) {
-				getFiles(file, new FileNode(file));
+				FileNode n = new FileNode(file);
+				node.add(n);
+				getFiles(file, n);
 			}
 
 		}
@@ -143,7 +150,7 @@ public class FileSystem{
 
 	public int getFileCount(){
 		
-		return root.getChildCount();
+		return fileCount;
 		
 	}
 
