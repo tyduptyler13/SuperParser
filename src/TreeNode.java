@@ -13,15 +13,21 @@ public class TreeNode extends DefaultMutableTreeNode{
 	 */
 	private static final long serialVersionUID = 8678579315929128975L;
 	
-	public Data node;
-	
-	public TreeNode(String s, Data node){
-		super(s);
-		this.node = node;
+	public TreeNode(String name){
+		super(name);
 	}
 	
-	public Data getNode(){
-		return node;
+	public String getOutput(){
+		String s = "";
+		
+		for (int i = 0; i<getChildCount(); ++i){
+			TreeNode node = (TreeNode) getChildAt(i);
+			
+			s += node.getOutput() + "\n";
+			
+		}
+		
+		return s;
 	}
 	
 }

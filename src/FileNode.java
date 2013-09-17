@@ -1,13 +1,16 @@
 import java.io.File;
 
-import javax.swing.tree.MutableTreeNode;
+public class FileNode extends TreeNode{
 
-public class FileNode extends Data{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2966491518943704310L;
 
 	protected File file;
 
 	public FileNode(File file){
-		super("File");
+		super("File: " + file.getName());
 		this.file = file;
 	}
 
@@ -21,26 +24,16 @@ public class FileNode extends Data{
 	}
 
 	public String getOutput(){
-		return file.getName();
+		return toString();
 	}
 
 	@Override
 	public String toString() {
-		return "File: " + file.getName();
-	}
-
-	@Override
-	public MutableTreeNode getComponents() {
-
-		TreeNode node = new TreeNode(file.getName(), this);
-
-		for (Data child : children){
-
-			node.add(child.getComponents());
-
+		if (file.isDirectory()){
+			return "Directory: " + file.getName();
+		} else {
+			return "File: " + file.getName();
 		}
-
-		return node;
 	}
 
 }

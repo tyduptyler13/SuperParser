@@ -24,23 +24,9 @@ public class HSTReader extends FileNode implements Reader{
 	}
 
 	@Override
-	public DynamicNode getData() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public MutableTreeNode getComponents() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	
 	
 }

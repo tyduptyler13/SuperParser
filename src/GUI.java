@@ -7,7 +7,9 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -17,6 +19,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 
 public class GUI extends JPanel implements ActionListener{
@@ -28,29 +32,48 @@ public class GUI extends JPanel implements ActionListener{
 
 	private JButton openFiles, openDirectory, getResults;
 	private JTextArea console, data;
-	private JPanel dataArea;
+	private JPanel root;
+	private JComponent tree;
 	private FileSystem fs;
 	private static JFrame frame;
 
 	private GUI(){
 
-		JPanel root = new JPanel();
+		root = new JPanel();
 		root.setLayout(new BorderLayout());
 
 		JPanel buttonbar = new JPanel();
 		buttonbar.setLayout(new FlowLayout());
-
-		dataArea = new JPanel();
-		dataArea.setLayout(new FlowLayout());
-		dataArea.setVisible(false);
 		
+		root.add(buttonbar, BorderLayout.NORTH);
+
 		data = new JTextArea();
 		data.setEditable(false);
-		data.setPreferredSize(new Dimension(300, 400));
+		data.getDocument().addDocumentListener(new DocumentListener() {
+
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				resize();
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				resize();
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				resize();
+			}
+			
+		});
 		JScrollPane dataScroll = new JScrollPane(data);
 		dataScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		dataScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		dataArea.add(dataScroll);
+		dataScroll.setPreferredSize(new Dimension(300, 400));
+		dataScroll.setMaximumSize(new Dimension(800, 600));
+		dataScroll.setSize(300, 400);
+		root.add(dataScroll, BorderLayout.WEST);
 
 		openFiles = new JButton("Open Files");
 		openFiles.setVerticalTextPosition(SwingConstants.CENTER);
@@ -63,7 +86,7 @@ public class GUI extends JPanel implements ActionListener{
 		openDirectory.setHorizontalTextPosition(SwingConstants.LEADING);
 		openDirectory.setActionCommand("openDirectory");
 		openDirectory.addActionListener(this);
-		
+
 		getResults = new JButton("Get Results");
 		getResults.setVerticalTextPosition(SwingConstants.CENTER);
 		getResults.setHorizontalAlignment(SwingConstants.LEADING);
@@ -84,8 +107,6 @@ public class GUI extends JPanel implements ActionListener{
 		buttonbar.add(openDirectory);
 		buttonbar.add(getResults);
 
-		root.add(buttonbar, BorderLayout.NORTH);
-		root.add(dataArea, BorderLayout.CENTER);
 		root.add(console, BorderLayout.SOUTH);
 
 		add(root);
@@ -116,9 +137,9 @@ public class GUI extends JPanel implements ActionListener{
 			if (in.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
 				fs = new FileSystem(in.getSelectedFile());
 				print("Directory Selected.");
-				print(fs.getFileCount() + " files parsed.");
+				print(fs.getFileCount() + " nodes parsed.");
 				showData();
-				
+
 			} else {
 				print("No folder selected.");
 			}
@@ -126,16 +147,25 @@ public class GUI extends JPanel implements ActionListener{
 		} else if (e.getActionCommand().equals("getResults")){
 			getOutput();
 		}
-		
+
 		frame.repaint();
 
 	}
 
 	private void showData(){
-		getResults.setEnabled(true);
-		dataArea.add(fs.getComponents(data));
-		dataArea.setVisible(true);
-		frame.setSize(650, 650);
+		if (tree == null){
+			tree = fs.getComponents(data);
+			root.add(tree, BorderLayout.EAST);
+			getResults.setEnabled(true);
+			tree.setVisible(true);
+			frame.setSize(650, 650);
+		} else {
+			tree.invalidate();
+			root.remove(tree);
+			tree = fs.getComponents(data);
+			root.add(tree, BorderLayout.EAST);
+			root.validate();
+		}
 	}
 
 	private void getOutput(){
@@ -175,6 +205,24 @@ public class GUI extends JPanel implements ActionListener{
 		frame.setVisible(true);
 
 		gui.print("Parser is ready. Please choose the files or directories you would like to parse.");
+	}
+	
+	private void resize(){
+		
+		String text = data.getText();
+		int cols = 0;
+		
+		String[] lines = text.split("\n");
+		
+		for (String line : lines){
+			if (line.length() > cols){
+				cols = line.length();
+			}
+		}
+		
+		data.setRows(lines.length);
+		data.setColumns(cols);
+		
 	}
 
 

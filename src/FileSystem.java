@@ -1,51 +1,33 @@
-import java.awt.Component;
+import java.awt.Dimension;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileFilter;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 public class FileSystem{
 
-	private DynamicTree tree;
-	private DynamicNode root;
 	public FileFilter fileFilter;
-	
-	public static final Filter defaultNodeFilter = new Filter(){
-
-		@Override
-		public boolean override(Data node) {
-			if (node instanceof UnknownData){
-				return true;
-			} else{
-				return false;
-			}
-			
-		}
-
-		@Override
-		public String getOutput(Data node) {
-			return skip();
-		}
-		
-	};
+	private TreeNode root;
+	private JTree tree;
 
 	private FileSystem(){
 
 		fileFilter = getFilter();
-		tree = new DynamicTree();
-		root = tree.root;
+
 	}
 
 	public FileSystem(File directory){
 
 		this();
+		root = new FileNode(directory);
+		tree = new JTree(root);
 		getFiles(directory, root);
 
 	}
@@ -53,11 +35,13 @@ public class FileSystem{
 	public FileSystem(File[] files){
 
 		this();
+		root = new TreeNode("Selected Files");
+		tree = new JTree(root);
 		addFiles(files, root);
 
 	}
 
-	private void addFiles(File[] files, DynamicNode node){
+	private void addFiles(File[] files, TreeNode node){
 
 		for (File file : files){
 
@@ -67,17 +51,19 @@ public class FileSystem{
 
 	}
 
-	private void addFile(File file, DynamicNode node){
+	private void addFile(File file, TreeNode node){
 
 		try {
-			node.addChild(ReaderFactory.createReader(file));
+			node.add(ReaderFactory.createReader(file));
 		} catch (FileNotFoundException e) {
-			Console.warn("Something may have gone wrong. The file doesn't seem to exist.");
+			Console.warn("Something may have gone wrong. The file doesn't seem to exist. (" + file.getPath() + ")");
+		} catch (ReaderFactory.FileNotSupported e) {
+			Console.warn("This file type is not supported! Skipping... (" + file.getName() + ")");
 		}
 
 	}
 
-	private void getFiles(File directory, DynamicNode node){
+	private void getFiles(File directory, TreeNode node){
 
 		for (File file : directory.listFiles()){
 
@@ -101,39 +87,35 @@ public class FileSystem{
 			@Override
 			public boolean accept(File f) {
 				if (f.isDirectory()) return true;
-				return (f.getName().endsWith(".hst") || f.getName().endsWith(".sts") || f.getName().endsWith(".sp"));
+				return (f.getName().endsWith(".hst") || f.getName().endsWith(".sts"));
 			}
 
 			@Override
 			public String getDescription() {
-				return "Custom Filter. (hst|sts|sp)";
+				return "Custom Filter. (hst|sts)";
 			}
 
 		};
 
 	}
-	
-	public Component getComponents(final JTextArea output){
-		return getComponents(output, defaultNodeFilter);
-	}
 
-	public Component getComponents(final JTextArea output, final Filter f){
+	public JComponent getComponents(final JTextArea output){
+
+		JScrollPane pane = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
-		final JTree t = tree.getTree();
-		JScrollPane pane = new JScrollPane(t, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		
-		t.addTreeSelectionListener(new TreeSelectionListener(){
+		tree.addTreeSelectionListener(new TreeSelectionListener(){
 
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
-				TreePath nodes[] = t.getSelectionPaths();
+				TreePath nodes[] = tree.getSelectionPaths();
 				
 				String s = "";
 				
 				for (TreePath path : nodes){
 					Object o = path.getLastPathComponent();
 					if (o instanceof TreeNode){//We can only get output from these nodes.
-						s += ((TreeNode)o).getNode().getOutput(f);
+						s += ((TreeNode)o).getOutput();
 					}
 				}
 				
@@ -142,6 +124,12 @@ public class FileSystem{
 			}
 			
 		});
+		
+		Dimension d = new Dimension(300, 400);
+		pane.setMinimumSize(d);
+		pane.setPreferredSize(d);
+		tree.setMinimumSize(d);
+		tree.setPreferredSize(d);
 
 		return pane;
 		
@@ -155,28 +143,9 @@ public class FileSystem{
 
 	public int getFileCount(){
 		
-		return getFileCount(root);
+		return root.getChildCount();
 		
 	}
-	
-	private int getFileCount(DynamicNode node){
-		
-		int count = 0;
-		
-		for (Data child : node.children){
-			
-			if (child instanceof Reader){
-				count++;
-			} else {
-				count += getFileCount(child);
-			}
-			
-		}
-		
-		return count;
-		
-	}
-
 
 }
 

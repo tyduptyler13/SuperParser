@@ -9,14 +9,7 @@ Currently this work is in an Alpha stage and it should be expected to have bugs.
 
 Tasks
 ----
-* ~~Setup Data Structures~~
-* ~~Basic File Reader~~
-* ~~Display Data in GUI~~
-* Finish getOutput methods (Formatted output)
-* Improve GUI Display to show sub data
-* Add filters
-* Add Stats
-* Add SuperParser Save format (Not needed but might add)
+This program has been restructured for minimum complexity. The goals will need to be re-evaluated.
 
 Adding functionality
 ----
