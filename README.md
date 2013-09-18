@@ -1,5 +1,6 @@
 SuperParser
 ====
+[![Build Status](http://ci.myuplay.com/buildStatus/icon?job=SuperParser)](http://ci.myuplay.com/job/SuperParser/)
 
 Purpose
 ----
