@@ -37,7 +37,8 @@ public final class STSReader extends FileNode implements Reader{
 					String[] parts = breakLine(line);
 
 					if (parts[0].contains("Parameter File")){
-						String tmp[] = parts[1].split("\\\\");
+						line = s.nextLine();//The correct data is always on the next line.
+						String tmp[] = line.split("\\\\");
 						p.parameter = tmp[tmp.length-1];//Get the end of the path.
 					} else if (parts[0].contains("Participant Id")){
 						p.id = parts[1];

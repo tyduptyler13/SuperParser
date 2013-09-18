@@ -23,9 +23,7 @@ public class FileNode extends TreeNode{
 		return file;
 	}
 
-	public String getOutput(){
-		return toString();
-	}
+	//Use default getOutput from TreeNode
 
 	@Override
 	public String toString() {

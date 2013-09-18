@@ -110,28 +110,28 @@ public class FileSystem{
 
 		JScrollPane pane = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		
+
 		tree.addTreeSelectionListener(new TreeSelectionListener(){
 
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
 				TreePath nodes[] = tree.getSelectionPaths();
-				
+
 				String s = "";
-				
+
 				for (TreePath path : nodes){
 					Object o = path.getLastPathComponent();
 					if (o instanceof TreeNode){//We can only get output from these nodes.
 						s += ((TreeNode)o).getOutput();
 					}
 				}
-				
+
 				output.setText(s);
-				
+
 			}
-			
+
 		});
-		
+
 		Dimension d = new Dimension(300, 400);
 		pane.setMinimumSize(d);
 		pane.setPreferredSize(d);
@@ -139,7 +139,7 @@ public class FileSystem{
 		tree.setPreferredSize(d);
 
 		return pane;
-		
+
 	}
 
 	public String getOutput(){
@@ -149,9 +149,9 @@ public class FileSystem{
 	}
 
 	public int getFileCount(){
-		
+
 		return fileCount;
-		
+
 	}
 
 }

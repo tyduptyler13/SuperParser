@@ -3,7 +3,7 @@ import java.io.File;
 
 public class HSTReader extends FileNode implements Reader{
 
-	
+
 	/**
 	 * 
 	 */
@@ -25,5 +25,5 @@ public class HSTReader extends FileNode implements Reader{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 }

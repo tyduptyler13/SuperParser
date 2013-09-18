@@ -44,7 +44,7 @@ public class GUI extends JPanel implements ActionListener{
 
 		JPanel buttonbar = new JPanel();
 		buttonbar.setLayout(new FlowLayout());
-		
+
 		root.add(buttonbar, BorderLayout.NORTH);
 
 		data = new JTextArea();
@@ -65,7 +65,7 @@ public class GUI extends JPanel implements ActionListener{
 			public void changedUpdate(DocumentEvent e) {
 				resize();
 			}
-			
+
 		});
 		JScrollPane dataScroll = new JScrollPane(data);
 		dataScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -169,7 +169,7 @@ public class GUI extends JPanel implements ActionListener{
 	}
 
 	private void getOutput(){
-		StringSelection ss = new StringSelection(fs.getOutput());
+		StringSelection ss = new StringSelection(fs.getOutput().replaceAll("[\\(|\\)]", ""));
 		Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
 		cb.setContents(ss, null);
 		print("The results have been copied to your clipboard. They may be pasted into excel or a text document.");
@@ -206,26 +206,23 @@ public class GUI extends JPanel implements ActionListener{
 
 		gui.print("Parser is ready. Please choose the files or directories you would like to parse.");
 	}
-	
+
 	private void resize(){
-		
+
 		String text = data.getText();
 		int cols = 0;
-		
+
 		String[] lines = text.split("\n");
-		
+
 		for (String line : lines){
 			if (line.length() > cols){
 				cols = line.length();
 			}
 		}
-		
+
 		data.setRows(lines.length);
 		data.setColumns(cols);
-		
+
 	}
 
-
-
 }
-

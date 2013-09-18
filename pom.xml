@@ -26,8 +26,8 @@
 					</execution>
 				</executions>
 				<configuration>
-					<doCheck>false</doCheck>
-					<doUpdate>false</doUpdate>
+					<doCheck>false</doCheck><!-- This is taken care of by Jenkins -->
+					<doUpdate>false</doUpdate><!-- This is taken care of by Jenkins -->
 					<shortRevisionLength>6</shortRevisionLength>
 				</configuration>
 			</plugin>
