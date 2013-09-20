@@ -29,7 +29,11 @@ public class HSTReader extends FileNode implements Reader{
 		this.add(stats);
 
 		String name = file.getName();//We can get stuff from the filename.
-		participant = Integer.parseInt(name.split(",")[0].substring(12));
+		try{
+			participant = Integer.parseInt(name.split(",")[0].substring(12));
+		}catch (Exception e){
+			participant = 0;
+		}
 
 		String[] path = file.getPath().split("[\\\\|/|:|\\.]");//File delimiter.
 
