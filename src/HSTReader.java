@@ -21,9 +21,8 @@ public class HSTReader extends FileNode implements Reader{
 	}
 
 	@Override
-	public String getOutput() {
+	public void getOutput() {
 		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

@@ -37,9 +37,7 @@ public final class STSReader extends FileNode implements Reader{
 					String[] parts = breakLine(line);
 
 					if (parts[0].contains("Parameter File")){
-						line = s.nextLine();//The correct data is always on the next line.
-						String tmp[] = line.split("\\\\");
-						p.parameter = tmp[tmp.length-1];//Get the end of the path.
+						p.location = file.getPath();//Get the end of the path.
 					} else if (parts[0].contains("Participant Id")){
 						p.id = parts[1];
 					} else if (parts[0].contains("Trial")){
@@ -119,8 +117,8 @@ public final class STSReader extends FileNode implements Reader{
 		return this;
 	}
 
-	public String getOutput(){
-		return p.toString();
+	public void getOutput(){
+		GUI.STSOutput += p.toString();
 	}
 
 	private boolean isHeader(String s){

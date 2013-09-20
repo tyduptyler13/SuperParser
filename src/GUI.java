@@ -21,6 +21,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.Document;
 
 
 public class GUI extends JPanel implements ActionListener{
@@ -30,12 +31,15 @@ public class GUI extends JPanel implements ActionListener{
 	 */
 	private static final long serialVersionUID = -7632908392074124134L;
 
-	private JButton openFiles, openDirectory, getResults;
+	private JButton openFiles, openDirectory, getSTS, getHST;
 	private JTextArea console, data;
 	private JPanel root;
 	private JComponent tree;
 	private FileSystem fs;
 	private static JFrame frame;
+	
+	public static String STSOutput = "";
+	public static String HSTOutput = "";
 
 	private GUI(){
 
@@ -49,31 +53,11 @@ public class GUI extends JPanel implements ActionListener{
 
 		data = new JTextArea();
 		data.setEditable(false);
-		data.getDocument().addDocumentListener(new DocumentListener() {
-
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				resize();
-			}
-
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				resize();
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				resize();
-			}
-
-		});
 		JScrollPane dataScroll = new JScrollPane(data);
 		dataScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		dataScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		dataScroll.setPreferredSize(new Dimension(300, 400));
-		dataScroll.setMaximumSize(new Dimension(800, 600));
-		dataScroll.setSize(300, 400);
-		root.add(dataScroll, BorderLayout.WEST);
+		root.add(dataScroll, BorderLayout.EAST);
 
 		openFiles = new JButton("Open Files");
 		openFiles.setVerticalTextPosition(SwingConstants.CENTER);
@@ -87,27 +71,35 @@ public class GUI extends JPanel implements ActionListener{
 		openDirectory.setActionCommand("openDirectory");
 		openDirectory.addActionListener(this);
 
-		getResults = new JButton("Get Results");
-		getResults.setVerticalTextPosition(SwingConstants.CENTER);
-		getResults.setHorizontalAlignment(SwingConstants.LEADING);
-		getResults.setActionCommand("getResults");
-		getResults.addActionListener(this);
-		getResults.setEnabled(false);
+		getSTS = new JButton("Get STS Results");
+		getSTS.setVerticalTextPosition(SwingConstants.CENTER);
+		getSTS.setHorizontalAlignment(SwingConstants.LEADING);
+		getSTS.setActionCommand("getSTS");
+		getSTS.addActionListener(this);
+		getSTS.setEnabled(false);
+		
+		getHST = new JButton("Get HST Results");
+		getHST.setVerticalTextPosition(SwingConstants.CENTER);
+		getHST.setHorizontalAlignment(SwingConstants.LEADING);
+		getHST.setActionCommand("getResults");
+		getHST.addActionListener(this);
+		getHST.setEnabled(false);
 
 		console = new JTextArea();
 		console.setEditable(false);
 		console.setWrapStyleWord(true);
 		console.setLineWrap(true);
-		console.setPreferredSize(new Dimension(450,200));
 		JScrollPane cscroll = new JScrollPane(console);
+		cscroll.setPreferredSize(new Dimension(450,200));
 		cscroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 
 
 		buttonbar.add(openFiles);
 		buttonbar.add(openDirectory);
-		buttonbar.add(getResults);
+		buttonbar.add(getSTS);
+		buttonbar.add(getHST);
 
-		root.add(console, BorderLayout.SOUTH);
+		root.add(cscroll, BorderLayout.SOUTH);
 
 		add(root);
 	}
@@ -144,8 +136,10 @@ public class GUI extends JPanel implements ActionListener{
 				print("No folder selected.");
 			}
 
-		} else if (e.getActionCommand().equals("getResults")){
-			getOutput();
+		} else if (e.getActionCommand().equals("getSTS")){
+			getOutput(STSOutput);
+		} else if (e.getActionCommand().equals("getHST")){
+			getOutput(HSTOutput);
 		}
 
 		frame.repaint();
@@ -155,21 +149,22 @@ public class GUI extends JPanel implements ActionListener{
 	private void showData(){
 		if (tree == null){
 			tree = fs.getComponents(data);
-			root.add(tree, BorderLayout.EAST);
-			getResults.setEnabled(true);
+			root.add(tree, BorderLayout.WEST);
+			getSTS.setEnabled(true);
+			getHST.setEnabled(true);
 			tree.setVisible(true);
-			frame.setSize(650, 650);
+			frame.setSize(650, 700);
 		} else {
 			tree.invalidate();
 			root.remove(tree);
 			tree = fs.getComponents(data);
-			root.add(tree, BorderLayout.EAST);
+			root.add(tree, BorderLayout.WEST);
 			root.validate();
 		}
 	}
 
-	private void getOutput(){
-		StringSelection ss = new StringSelection(fs.getOutput().replaceAll("[\\(|\\)]", ""));
+	private void getOutput(String s){
+		StringSelection ss = new StringSelection(s.replaceAll("[\\(|\\)]", ""));//Filter out "(" and ")"
 		Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
 		cb.setContents(ss, null);
 		print("The results have been copied to your clipboard. They may be pasted into excel or a text document.");
@@ -177,6 +172,8 @@ public class GUI extends JPanel implements ActionListener{
 
 	private void print(String s){
 		console.append("[SuperParser] "+s+"\r\n");
+		Document d = console.getDocument();
+		console.select(d.getLength(), d.getLength());
 	}
 
 	public static void createAndShowGUI() {
@@ -206,23 +203,10 @@ public class GUI extends JPanel implements ActionListener{
 
 		gui.print("Parser is ready. Please choose the files or directories you would like to parse.");
 	}
-
-	private void resize(){
-
-		String text = data.getText();
-		int cols = 0;
-
-		String[] lines = text.split("\n");
-
-		for (String line : lines){
-			if (line.length() > cols){
-				cols = line.length();
-			}
-		}
-
-		data.setRows(lines.length);
-		data.setColumns(cols);
-
+	
+	public static void resetOutput(){
+		GUI.STSOutput = "";
+		GUI.HSTOutput = "";
 	}
 
 }

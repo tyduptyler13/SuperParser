@@ -118,13 +118,17 @@ public class FileSystem{
 				TreePath nodes[] = tree.getSelectionPaths();
 
 				String s = "";
+				GUI.resetOutput();
 
 				for (TreePath path : nodes){
 					Object o = path.getLastPathComponent();
 					if (o instanceof TreeNode){//We can only get output from these nodes.
-						s += ((TreeNode)o).getOutput();
+						((TreeNode)o).getOutput();
 					}
 				}
+
+				s += "HST Output: \n" + GUI.HSTOutput + "\n";
+				s += "STS Output: \n" + GUI.STSOutput + "\n";
 
 				output.setText(s);
 
@@ -133,18 +137,10 @@ public class FileSystem{
 		});
 
 		Dimension d = new Dimension(300, 400);
-		pane.setMinimumSize(d);
-		pane.setPreferredSize(d);
 		tree.setMinimumSize(d);
-		tree.setPreferredSize(d);
+		pane.setPreferredSize(d);
 
 		return pane;
-
-	}
-
-	public String getOutput(){
-
-		return root.getOutput();
 
 	}
 

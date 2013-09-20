@@ -17,17 +17,18 @@ public class TreeNode extends DefaultMutableTreeNode{
 		super(name);
 	}
 
-	public String getOutput(){
-		String s = "";
+	/**
+	 * Recursively retrieve all of the data within the tree.
+	 */
+	public void getOutput(){
 
 		for (int i = 0; i<getChildCount(); ++i){
 			TreeNode node = (TreeNode) getChildAt(i);
 
-			s += node.getOutput();
+			node.getOutput();
 
 		}
 
-		return s;
 	}
 
 }
