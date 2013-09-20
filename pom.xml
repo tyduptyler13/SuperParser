@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.myuplay</groupId>
 	<artifactId>SuperParser</artifactId>
-	<version>0.0.7-SNAPSHOT</version>
+	<version>1.0-SNAPSHOT</version>
 	<name>SuperParser</name>
 	<description>A combination of NFCParser and HSTReader with a few extra bells and whistles.</description>
 	<properties>

@@ -81,7 +81,7 @@ public class GUI extends JPanel implements ActionListener{
 		getHST = new JButton("Get HST Results");
 		getHST.setVerticalTextPosition(SwingConstants.CENTER);
 		getHST.setHorizontalAlignment(SwingConstants.LEADING);
-		getHST.setActionCommand("getResults");
+		getHST.setActionCommand("getHST");
 		getHST.addActionListener(this);
 		getHST.setEnabled(false);
 

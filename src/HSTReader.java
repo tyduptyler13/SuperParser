@@ -18,16 +18,31 @@ public class HSTReader extends FileNode implements Reader{
 
 	private ArrayList<Data> data = new ArrayList<Data>();
 	private int participant;
-	private String map;
-	private String condition;
+	private String map = "?";
+	private String condition = "?";
+	private StatNode stats;
 
 	public HSTReader(File file) {//External prep
 		super(file, "HSTReader");
-		
+
+		stats = new StatNode();
+		this.add(stats);
+
 		String name = file.getName();//We can get stuff from the filename.
 		participant = Integer.parseInt(name.split(",")[0].substring(12));
-		
-		//TODO get condition and map
+
+		String[] path = file.getPath().split("[\\\\|/|:|\\.]");//File delimiter.
+
+		for (String part : path){
+
+			if (part.matches("^M[0-9]+$")){
+				map = part;
+			}else if (part.matches("^A[0-9]+$")){
+				condition = part;
+			}
+
+		}
+
 	}
 
 	@Override
@@ -59,7 +74,8 @@ public class HSTReader extends FileNode implements Reader{
 		} catch (IOException e) {
 			Console.warn("Sorry but the files seem to be giving the program some trouble. The files cannot be read.");
 		}
-		
+
+		calculateStats();
 		sort();//Sort on initialization.
 
 		return this;
@@ -67,15 +83,72 @@ public class HSTReader extends FileNode implements Reader{
 
 	@Override
 	public void getOutput() {
-		
+
 		GUI.HSTOutput += getLastString();//Already sorted.
-		
+
 	}
 
 	private HSTReader sort(){
 		Console.print("Sorting data.");
 		Collections.sort(data);
 		return this;
+	}
+
+	private void calculateStats(){
+
+		int c = 0;
+		int vehicles = 0;
+
+		for (Data d : data){
+			if (d.appliance > vehicles){
+				vehicles = d.appliance;
+			}
+		}
+
+		int last = 0;
+		int[] lastActionVehicle = new int[vehicles];
+		double[] lastDistance = new double[vehicles];
+
+		for (Data d : data){
+
+			if (d.appliance != c){
+
+				int index = d.appliance-1;
+
+				int diff = d.generation - last; //Current time minus the last action.
+				int vlast = d.generation - lastActionVehicle[index]; //Current time minus the last time the vehicle showed up.
+				double dt = lastDistance[index];
+
+				stats.appendData(diff + "\t" + vlast + "\t" + d.appliance + "\t" + d.action + "\t" + dt + "\n");
+
+				last = d.generation;
+				lastActionVehicle[index] = d.generation;
+				lastDistance[index] = getLastDistance(d.location, d.finalLocation);
+			}
+
+		}
+
+	}
+
+	private double getLastDistance(String old, String current){
+
+		if (old.isEmpty() || current.isEmpty()){
+			return 0;
+		}
+
+		int[] b = parsePosition(current);
+		int[] a = parsePosition(old);
+
+		return Math.sqrt(Math.pow(b[0] - a[0], 2) + Math.pow(b[1] - a[1], 2));
+
+	}
+
+	private int[] parsePosition(String position){
+
+		String[] parts = position.replaceAll("[\\(\\)\\s]", "").split(",");
+		int[] ret = { Integer.parseInt(parts[0]), Integer.parseInt(parts[1]) };
+		return ret;
+
 	}
 
 	/**
@@ -168,7 +241,7 @@ public class HSTReader extends FileNode implements Reader{
 		}
 
 		public String toString(){
-			String result = map + "\t" + condition + "\t" + participant + "\t" + map + "\t" + number + "\t" + generation + "\t";
+			String result = map + "\t" + condition + "\t" + participant + "\t" + number + "\t" + generation + "\t";
 			result += score + "\t" + action + "\t" + appliance + " (Fire Truck)\t" + location + "\t" + locationType + "\t";
 			result += finalLocation + "\t" + finalLocationType + "\t" + extra + "\t";
 			return result;

@@ -18,6 +18,18 @@ public final class STSReader extends FileNode implements Reader{
 
 	public STSReader(File file) {
 		super(file, "STSReader");
+
+		String[] path = file.getPath().split("[\\\\|/|:|\\.]");//File delimiter.
+
+		for (String part : path){
+
+			if (part.matches("^M[0-9]+$"))
+				p.map = part;
+			else if (part.matches("^A[0-9]+$")){
+				p.condition = part;
+			}
+
+		}
 	}
 
 	@Override
@@ -36,9 +48,7 @@ public final class STSReader extends FileNode implements Reader{
 
 					String[] parts = breakLine(line);
 
-					if (parts[0].contains("Parameter File")){
-						p.location = file.getPath();//Get the end of the path.
-					} else if (parts[0].contains("Participant Id")){
+					if (parts[0].contains("Participant Id")){
 						p.id = parts[1];
 					} else if (parts[0].contains("Trial")){
 						p.trial = parts[1];

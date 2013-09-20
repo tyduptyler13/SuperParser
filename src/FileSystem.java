@@ -122,6 +122,13 @@ public class FileSystem{
 
 				for (TreePath path : nodes){
 					Object o = path.getLastPathComponent();
+					
+					//Special case where only one node will be output.
+					if (o instanceof StatNode){	
+						output.setText(((StatNode)o).getData());
+						return;
+					}
+					
 					if (o instanceof TreeNode){//We can only get output from these nodes.
 						((TreeNode)o).getOutput();
 					}
