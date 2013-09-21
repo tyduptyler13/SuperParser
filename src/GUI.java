@@ -17,6 +17,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.DocumentEvent;
@@ -35,11 +36,12 @@ public class GUI extends JPanel implements ActionListener{
 	private JTextArea console, data;
 	private JPanel root;
 	private JComponent tree;
-	private FileSystem fs;
 	private static JFrame frame;
-	
+
 	public static String STSOutput = "";
 	public static String HSTOutput = "";
+
+	private Console c;
 
 	private GUI(){
 
@@ -77,7 +79,7 @@ public class GUI extends JPanel implements ActionListener{
 		getSTS.setActionCommand("getSTS");
 		getSTS.addActionListener(this);
 		getSTS.setEnabled(false);
-		
+
 		getHST = new JButton("Get HST Results");
 		getHST.setVerticalTextPosition(SwingConstants.CENTER);
 		getHST.setHorizontalAlignment(SwingConstants.LEADING);
@@ -102,38 +104,87 @@ public class GUI extends JPanel implements ActionListener{
 		root.add(cscroll, BorderLayout.SOUTH);
 
 		add(root);
+
+		//Setup universal console.
+		c = new Console(){
+
+			@Override
+			public void print(String s) {
+				console.append(s+"\r\n");
+				Document d = console.getDocument();
+				console.select(d.getLength(), d.getLength());
+			}
+
+		};
+		Console.addPrinter(c);
 	}
 
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("openFiles")){
 
-			JFileChooser in = new JFileChooser("Open");
+			final JFileChooser in = new JFileChooser("Open");
 			in.setCurrentDirectory(new File("."));
 			in.addChoosableFileFilter(FileSystem.getFilter());
 			in.setFileFilter(in.getChoosableFileFilters()[1]);
 			in.setAcceptAllFileFilterUsed(false);
 			in.setMultiSelectionEnabled(true);
 			if (in.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
-				fs = new FileSystem(in.getSelectedFiles());
-				print(fs.getFileCount() + " files parsed.");
-				showData();
+				SwingWorker<Void, Void> w = new SwingWorker<Void, Void>(){
+
+					FileSystem fs;
+
+					@Override
+					protected Void doInBackground() throws Exception {
+						fs = new FileSystem(in.getSelectedFiles());
+						return null;
+					}
+
+					protected void done(){
+						Console.log(fs.getFileCount() + " files parsed.");
+						showData(fs);
+					}
+
+				};
+
+				w.execute();
+
+
 			} else {
-				print("No folder selected.");
+				Console.log("No folder selected.");
 			}
 
 		} else if (e.getActionCommand().equals("openDirectory")) {
 
-			JFileChooser in = new JFileChooser("Open");
+			final JFileChooser in = new JFileChooser("Open");
 			in.setCurrentDirectory(new File("."));
 			in.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			if (in.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
-				fs = new FileSystem(in.getSelectedFile());
-				print("Directory Selected.");
-				print(fs.getFileCount() + " nodes parsed.");
-				showData();
+
+				SwingWorker<Void, Void> w = new SwingWorker<Void, Void>(){
+
+					FileSystem fs;
+
+					protected Void doInBackground() throws Exception {
+						fs = new FileSystem(in.getSelectedFile());
+						Console.log("Directory Selected.");
+						return null;
+					}
+
+					protected void done(){
+
+						Console.log(fs.getFileCount() + " nodes parsed.");
+						showData(fs);
+
+					}
+
+
+				};
+
+				w.execute();
+
 
 			} else {
-				print("No folder selected.");
+				Console.log("No folder selected.");
 			}
 
 		} else if (e.getActionCommand().equals("getSTS")){
@@ -146,7 +197,7 @@ public class GUI extends JPanel implements ActionListener{
 
 	}
 
-	private void showData(){
+	private synchronized void showData(FileSystem fs){
 		if (tree == null){
 			tree = fs.getComponents(data);
 			root.add(tree, BorderLayout.WEST);
@@ -167,13 +218,7 @@ public class GUI extends JPanel implements ActionListener{
 		StringSelection ss = new StringSelection(s.replaceAll("[\\(|\\)]", ""));//Filter out "(" and ")"
 		Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
 		cb.setContents(ss, null);
-		print("The results have been copied to your clipboard. They may be pasted into excel or a text document.");
-	}
-
-	private void print(String s){
-		console.append("[SuperParser] "+s+"\r\n");
-		Document d = console.getDocument();
-		console.select(d.getLength(), d.getLength());
+		Console.log("The results have been copied to your clipboard. They may be pasted into excel or a text document.");
 	}
 
 	public static void createAndShowGUI() {
@@ -181,15 +226,15 @@ public class GUI extends JPanel implements ActionListener{
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException e) {
-			Console.print("The UI could not find the default system look and feel!");
+			Console.log("The UI could not find the default system look and feel!");
 		} catch (InstantiationException e) {
-			Console.print("The UI could not create the look and feel.");
+			Console.log("The UI could not create the look and feel.");
 		} catch (IllegalAccessException e) {
-			Console.print("The UI could not access the look and feel.");
+			Console.log("The UI could not access the look and feel.");
 		} catch (UnsupportedLookAndFeelException e) {
-			Console.print("The UI look and feel is unsupported.");
+			Console.log("The UI look and feel is unsupported.");
 		}finally{
-			Console.print("The UI will use the default look and feel.");
+			Console.log("The UI will use the default look and feel.");
 		}
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -201,9 +246,9 @@ public class GUI extends JPanel implements ActionListener{
 		frame.pack();
 		frame.setVisible(true);
 
-		gui.print("Parser is ready. Please choose the files or directories you would like to parse.");
+		Console.log("Parser is ready. Please choose the files or directories you would like to parse.");
 	}
-	
+
 	public static void resetOutput(){
 		GUI.STSOutput = "";
 		GUI.HSTOutput = "";

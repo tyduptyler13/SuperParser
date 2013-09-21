@@ -21,19 +21,30 @@ public final class STSReader extends FileNode implements Reader{
 
 		String[] path = file.getPath().split("[\\\\|/|:|\\.]");//File delimiter.
 
+		String previous = "";
 		for (String part : path){
 
-			if (part.matches("^M[0-9]+$"))
+			if (part.matches("^M[0-9]+$")){
+				
+				if (previous.matches("^M[0-9]+$")){
+					p.condition = previous;
+				}
+				
 				p.map = part;
-			else if (part.matches("^A[0-9]+$")){
+				
+			}else if (part.matches("^A[0-9]+$")){
 				p.condition = part;
 			}
+			
+			previous = part;
 
 		}
 	}
 
 	@Override
 	public STSReader readIn() throws FileNotFoundException {
+		
+		Console.log("Reading in (" + file.getName() + ")");
 
 		//Read into tree.
 		Scanner s = new Scanner(new FileReader(file));
@@ -114,8 +125,7 @@ public final class STSReader extends FileNode implements Reader{
 
 			} catch (IndexOutOfBoundsException e){
 
-				Console.warn("Index out of bounds: ");
-				e.printStackTrace();
+				Console.warn("Index out of bounds! This could be a problem.");
 
 			}
 

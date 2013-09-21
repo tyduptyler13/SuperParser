@@ -6,6 +6,7 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
+import javax.swing.SwingWorker;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileFilter;
@@ -106,7 +107,7 @@ public class FileSystem{
 
 	}
 
-	public JComponent getComponents(final JTextArea output){
+	public synchronized JComponent getComponents(final JTextArea output){
 
 		JScrollPane pane = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -114,7 +115,7 @@ public class FileSystem{
 		tree.addTreeSelectionListener(new TreeSelectionListener(){
 
 			@Override
-			public void valueChanged(TreeSelectionEvent e) {
+			public synchronized void valueChanged(TreeSelectionEvent e) {
 				TreePath nodes[] = tree.getSelectionPaths();
 
 				String s = "";
@@ -122,13 +123,13 @@ public class FileSystem{
 
 				for (TreePath path : nodes){
 					Object o = path.getLastPathComponent();
-					
+
 					//Special case where only one node will be output.
 					if (o instanceof StatNode){	
 						output.setText(((StatNode)o).getData());
 						return;
 					}
-					
+
 					if (o instanceof TreeNode){//We can only get output from these nodes.
 						((TreeNode)o).getOutput();
 					}

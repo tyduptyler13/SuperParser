@@ -37,13 +37,22 @@ public class HSTReader extends FileNode implements Reader{
 
 		String[] path = file.getPath().split("[\\\\|/|:|\\.]");//File delimiter.
 
+		String previous = "";
 		for (String part : path){
 
 			if (part.matches("^M[0-9]+$")){
+				
+				if (previous.matches("^M[0-9]+$")){
+					condition = previous;
+				}
+				
 				map = part;
+				
 			}else if (part.matches("^A[0-9]+$")){
 				condition = part;
 			}
+			
+			previous = part;
 
 		}
 
@@ -51,7 +60,7 @@ public class HSTReader extends FileNode implements Reader{
 
 	@Override
 	public HSTReader readIn() {//File content reading.
-		Console.print("Reading file: ("+file.getName()+")");
+		Console.log("Reading file: ("+file.getName()+")");
 		FileReader fr;
 		BufferedReader br;
 		try {
@@ -93,7 +102,7 @@ public class HSTReader extends FileNode implements Reader{
 	}
 
 	private HSTReader sort(){
-		Console.print("Sorting data.");
+		Console.log("Sorting data.");
 		Collections.sort(data);
 		return this;
 	}
