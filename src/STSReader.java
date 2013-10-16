@@ -228,6 +228,10 @@ public final class STSReader extends FileNode implements Reader{
 	private String trim(String s){
 		return s.replaceAll("\\s+$", "");
 	}
+	
+	public String toString(){
+		return "STS: " + file.getName();
+	}
 
 }
 

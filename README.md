@@ -2,6 +2,22 @@ SuperParser
 ====
 [![Build Status](http://ci.myuplay.com/buildStatus/icon?job=SuperParser)](http://ci.myuplay.com/job/SuperParser/)
 
+How to Use
+----
+To use this program you must simply double click on the .jar file.
+
+Then open a specific set of files or a directory containing the files you wish it to parse.
+
+You must then click either Get HST results or Get STS results. To get more specific results you can use the
+tree directory explorer on the left side to make these results more specific. The "Get" buttons will filter
+the results to the selected (You can select multiple branches) branch of the tree.
+
+You can then paste the results to an excel document or word document. The data is formated to be compatible with
+excel and other spreadsheet programs. There is no direct output to excel file option available at this time.
+
+To retrieve HST statistics results you must navigate the tree and find the specific file you would like statistics on.
+To copy the results click once in the text area to the right, press `ctrl + A` and copy the selected data. These results
+are available only on a per file basis as they don't make sense concatenated together.
 
 Folder Structure
 ----

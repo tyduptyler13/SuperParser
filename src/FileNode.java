@@ -28,7 +28,7 @@ public class FileNode extends TreeNode{
 	@Override
 	public String toString() {
 		if (file.isDirectory()){
-			return "Directory: " + file.getName();
+			return  file.getName() +"/";
 		} else {
 			return "File: " + file.getName();
 		}

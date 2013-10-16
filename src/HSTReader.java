@@ -203,7 +203,7 @@ public class HSTReader extends FileNode implements Reader{
 	}
 
 	public String toString(){
-		return "HSTReader";
+		return "HST: " + file.getName();
 	}
 
 	//Nested classes
