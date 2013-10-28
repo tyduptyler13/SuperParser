@@ -41,17 +41,17 @@ public class HSTReader extends FileNode implements Reader{
 		for (String part : path){
 
 			if (part.matches("^M[0-9]+$")){
-				
+
 				if (previous.matches("^M[0-9]+$")){
 					condition = previous;
 				}
-				
+
 				map = part;
-				
+
 			}else if (part.matches("^A[0-9]+$")){
 				condition = part;
 			}
-			
+
 			previous = part;
 
 		}
@@ -70,7 +70,7 @@ public class HSTReader extends FileNode implements Reader{
 
 			while(s.hasNextLine()){
 				String line = s.nextLine();
-				if (line.contains("Fire Truck")){
+				if (line.contains("Fire Truck") || line.contains("Helicopter")){
 					try {
 						data.add(new Data(map, condition, participant, line));
 					} catch (Exception e) {
@@ -84,11 +84,16 @@ public class HSTReader extends FileNode implements Reader{
 			fr.close();
 		} catch (FileNotFoundException e) {
 			Console.warn("The file specified was not found.");
+			return this;
 		} catch (IOException e) {
 			Console.warn("Sorry but the files seem to be giving the program some trouble. The files cannot be read.");
+			return this;
+		} catch (Exception e) {
+			Console.warn("The program was not able to parse the file: " + file.getName());
+			return this;
 		}
 
-		calculateStats();
+		setStats();
 		sort();//Sort on initialization.
 
 		return this;
@@ -98,6 +103,7 @@ public class HSTReader extends FileNode implements Reader{
 	public void getOutput() {
 
 		GUI.HSTOutput += getLastString();//Already sorted.
+		GUI.StatsOutput += stats.getData();
 
 	}
 
@@ -106,8 +112,21 @@ public class HSTReader extends FileNode implements Reader{
 		Collections.sort(data);
 		return this;
 	}
+	
+	/**
+	 * Adds the data to the tree display. It is on a per file basis.
+	 */
+	private void setStats(){
+		stats.appendData(calculateStats());
+	}
 
-	private void calculateStats(){
+	/**
+	 * Formats and calculates statistics about all of the actions in the file.
+	 * @return Formated String
+	 */
+	private String calculateStats(){
+		
+		String ret = "";
 
 		int c = 0;
 		int vehicles = 0;
@@ -132,7 +151,7 @@ public class HSTReader extends FileNode implements Reader{
 				int vlast = d.generation - lastActionVehicle[index]; //Current time minus the last time the vehicle showed up.
 				double dt = lastDistance[index];
 
-				stats.appendData(diff + "\t" + vlast + "\t" + d.appliance + "\t" + d.action + "\t" + dt + "\n");
+				ret += map + "\t" + condition + "\t" + participant + "\t" + diff + "\t" + vlast + "\t" + d.appliance + "\t" + d.action + "\t" + dt + "\n";
 
 				last = d.generation;
 				lastActionVehicle[index] = d.generation;
@@ -140,9 +159,17 @@ public class HSTReader extends FileNode implements Reader{
 			}
 
 		}
+		
+		return ret;
 
 	}
 
+	/**
+	 * Specialized distance formula for 2D string formated coordinates.
+	 * @param old Origin
+	 * @param current Destination
+	 * @return Distance
+	 */
 	private double getLastDistance(String old, String current){
 
 		if (old.isEmpty() || current.isEmpty()){
@@ -156,9 +183,14 @@ public class HSTReader extends FileNode implements Reader{
 
 	}
 
+	/**
+	 * Takes data from a string coordinate and turns it into a int array of size 2 coordinate.
+	 * @param position Formated coordinate string
+	 * @return int[2]
+	 */
 	private int[] parsePosition(String position){
 
-		String[] parts = position.replaceAll("[\\(\\)\\s]", "").split(",");
+		String[] parts = position.replaceAll("[\\(\\)\\s\"]", "").split(",");//Parse this no matter the format. Treat as coord.
 		int[] ret = { Integer.parseInt(parts[0]), Integer.parseInt(parts[1]) };
 		return ret;
 
@@ -168,7 +200,7 @@ public class HSTReader extends FileNode implements Reader{
 	 * Collects the sorted data and returns the last bit of info from each section.
 	 * 
 	 * <p>WARNING!! - <br>
-	 * Only run this on a sorted Reader. If it is not sorted this data will not be correct.
+	 * This assumes the list is already sorted! It may have errors if it is not sorted!
 	 * </p>
 	 * @return List of the last of the list sorted by appliance then number.
 	 */

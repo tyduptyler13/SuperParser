@@ -32,7 +32,7 @@ public class GUI extends JPanel implements ActionListener{
 	 */
 	private static final long serialVersionUID = -7632908392074124134L;
 
-	private JButton openFiles, openDirectory, getSTS, getHST;
+	private JButton openFiles, openDirectory, getSTS, getHST, getStats;
 	private JTextArea console, data;
 	private JPanel root;
 	private JComponent tree;
@@ -40,8 +40,11 @@ public class GUI extends JPanel implements ActionListener{
 
 	public static String STSOutput = "";
 	public static String HSTOutput = "";
+	public static String StatsOutput = "";
 
 	private Console c;
+	
+	private File lastDir = new File(".");
 
 	private GUI(){
 
@@ -86,6 +89,13 @@ public class GUI extends JPanel implements ActionListener{
 		getHST.setActionCommand("getHST");
 		getHST.addActionListener(this);
 		getHST.setEnabled(false);
+		
+		getStats = new JButton("Get Stats");
+		getStats.setVerticalTextPosition(SwingConstants.CENTER);
+		getStats.setHorizontalAlignment(SwingConstants.LEADING);
+		getStats.setActionCommand("getStats");
+		getStats.addActionListener(this);
+		getStats.setEnabled(false);
 
 		console = new JTextArea();
 		console.setEditable(false);
@@ -100,6 +110,7 @@ public class GUI extends JPanel implements ActionListener{
 		buttonbar.add(openDirectory);
 		buttonbar.add(getSTS);
 		buttonbar.add(getHST);
+		buttonbar.add(getStats);
 
 		root.add(cscroll, BorderLayout.SOUTH);
 
@@ -123,7 +134,7 @@ public class GUI extends JPanel implements ActionListener{
 		if (e.getActionCommand().equals("openFiles")){
 
 			final JFileChooser in = new JFileChooser("Open");
-			in.setCurrentDirectory(new File("."));
+			in.setCurrentDirectory(lastDir);
 			in.addChoosableFileFilter(FileSystem.getFilter());
 			in.setFileFilter(in.getChoosableFileFilters()[1]);
 			in.setAcceptAllFileFilterUsed(false);
@@ -135,6 +146,7 @@ public class GUI extends JPanel implements ActionListener{
 
 					@Override
 					protected Void doInBackground() throws Exception {
+						lastDir = in.getCurrentDirectory();
 						fs = new FileSystem(in.getSelectedFiles());
 						return null;
 					}
@@ -156,7 +168,7 @@ public class GUI extends JPanel implements ActionListener{
 		} else if (e.getActionCommand().equals("openDirectory")) {
 
 			final JFileChooser in = new JFileChooser("Open");
-			in.setCurrentDirectory(new File("."));
+			in.setCurrentDirectory(lastDir);
 			in.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			if (in.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
 
@@ -165,6 +177,7 @@ public class GUI extends JPanel implements ActionListener{
 					FileSystem fs;
 
 					protected Void doInBackground() throws Exception {
+						lastDir = in.getCurrentDirectory();
 						fs = new FileSystem(in.getSelectedFile());
 						Console.log("Directory Selected.");
 						return null;
@@ -191,6 +204,8 @@ public class GUI extends JPanel implements ActionListener{
 			getOutput(STSOutput);
 		} else if (e.getActionCommand().equals("getHST")){
 			getOutput(HSTOutput);
+		} else if (e.getActionCommand().equals("getStats")){
+			getOutput(StatsOutput);
 		}
 
 		frame.repaint();
@@ -203,6 +218,7 @@ public class GUI extends JPanel implements ActionListener{
 			root.add(tree, BorderLayout.WEST);
 			getSTS.setEnabled(true);
 			getHST.setEnabled(true);
+			getStats.setEnabled(true);
 			tree.setVisible(true);
 			frame.setSize(650, 700);
 		} else {
@@ -215,7 +231,7 @@ public class GUI extends JPanel implements ActionListener{
 	}
 
 	private void getOutput(String s){
-		StringSelection ss = new StringSelection(s.replaceAll("[\\(|\\)]", ""));//Filter out "(" and ")"
+		StringSelection ss = new StringSelection(s.replaceAll("[\\(\\)]", ""));//Filter out "(" and ")"
 		Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
 		cb.setContents(ss, null);
 		Console.log("The results have been copied to your clipboard. They may be pasted into excel or a text document.");
@@ -252,6 +268,7 @@ public class GUI extends JPanel implements ActionListener{
 	public static void resetOutput(){
 		GUI.STSOutput = "";
 		GUI.HSTOutput = "";
+		GUI.StatsOutput = "";
 	}
 
 }

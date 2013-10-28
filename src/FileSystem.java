@@ -135,8 +135,9 @@ public class FileSystem{
 					}
 				}
 
-				s += "HST Output: \n" + GUI.HSTOutput + "\n";
-				s += "STS Output: \n" + GUI.STSOutput + "\n";
+				s += "HST Output: \n" + GUI.HSTOutput + "\n\n";
+				s += "STS Output: \n" + GUI.STSOutput + "\n\n";
+				s += "Stats Output: \n" + GUI.StatsOutput + "\n\n";
 
 				output.setText(s);
 

@@ -15,10 +15,6 @@ the results to the selected (You can select multiple branches) branch of the tre
 You can then paste the results to an excel document or word document. The data is formated to be compatible with
 excel and other spreadsheet programs. There is no direct output to excel file option available at this time.
 
-To retrieve HST statistics results you must navigate the tree and find the specific file you would like statistics on.
-To copy the results click once in the text area to the right, press `ctrl + A` and copy the selected data. These results
-are available only on a per file basis as they don't make sense concatenated together.
-
 Folder Structure
 ----
 HST and STS files should be contained in a file structure similar to the following:
@@ -63,15 +59,15 @@ If participant can't be identified then it will default to '0'.
 
 HST Stats Output Format
 ----
-| Last Action | Last Action by Same Vehicle | Vehicle | Action | Last distance traveled by vehicle |
-|-------------|-----------------------------|---------|--------|-----------------------------------|
-| #           | #                           | #       | String | ## (Distance with decimal)        |
+| Map | Condition | Participant | Last Action | Last Action by Same Vehicle | Vehicle | Action | Last distance traveled by vehicle |
+|-----|-----------|-------------|-------------|-----------------------------|---------|--------|-----------------------------------|
+| M#  | A or M #  | #           | #           | #                           | #       | String | ## (Distance with decimal)        |
 
 To be clear the last distance traveled by vehicle column will track the distance that a vehicle traveled in its last action.
 This does not mean the distance it is about to travel from its current action! This is useful for tracking and relating
 the time between actions on a vehicle and how far it had to travel before it would become idle.
 
-Stats data is available in the tree dropdowns on a per file basis. This is not available in a concatenated format. (Yet)
+Stats are now available as a concatenated data set. Use the `Get Stats` button to copy all of the selected files into the output.
 
 STS Output Format
 ----
